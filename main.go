@@ -6,17 +6,10 @@ import (
 	"log"
 	"net/http"
 	"encoding/json"
-	"fmt"
 )
 
 type Env struct {
 	db *sql.DB
-}
-
-type Student struct {
-	Name     string
-	LastName string
-	Score    float32
 }
 
 func main() {
@@ -51,16 +44,16 @@ func studentsIndex(env *Env) http.Handler {
 
 func studentAdd(env *Env) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var s Student
+		var stud models.StudentDecoded
 		if r.Body == nil {
 			http.Error(w, "Please send a request body", 400)
 			return
 		}
-		err := json.NewDecoder(r.Body).Decode(&s)
+		err := json.NewDecoder(r.Body).Decode(&stud)
 		if err != nil {
 			http.Error(w, err.Error(), 400)
 			return
 		}
-		fmt.Println(s.Name)
+		models.AddStudent(env.db, stud)
 	})
 }

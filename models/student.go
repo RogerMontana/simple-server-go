@@ -12,6 +12,12 @@ type Student struct {
 	Score    float32
 }
 
+type StudentDecoded struct {
+	Name     string
+	LastName string
+	Score    float32
+}
+
 func AllStudents(db *sql.DB) ([]*Student, error) {
 	rows, err := db.Query("SELECT * FROM students")
 	if err != nil {
@@ -34,7 +40,7 @@ func AllStudents(db *sql.DB) ([]*Student, error) {
 	return bks, nil
 }
 
-func AddStudent(db sql.DB, student *Student) {
+func AddStudent(db *sql.DB, student StudentDecoded) {
 	insert := `
 		INSERT INTO students (Name, LastName, Score)
 		VALUES ($1, $2, $3)`
